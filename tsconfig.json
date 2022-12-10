@@ -1,29 +1,18 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "lib": [
-      "esnext"
-    ],
-    "removeComments": true,
-    "module": "esnext",
-    "rootDir": "./src",
-    "baseUrl": "./src",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "outDir": "./dest",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "skipLibCheck": true
-  },
-  "exclude": [
-    "node_modules"
-  ],
-  "ts-node": {
-    "esm": true
-  },
-  "include": [
-    "./src/**/*"
-  ]
+	"compilerOptions": {
+		"target": "es6",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": "./dist",
+		"removeComments": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"strictPropertyInitialization": false,
+		"skipLibCheck": true
+	}
 }
