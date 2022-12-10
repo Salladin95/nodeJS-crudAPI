@@ -1,0 +1,50 @@
+{
+  "name": "nodeJS-crudAPI",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "type": "module",
+  "repository": "git@github.com:Salladin95/nodeJS-crudAPI.git",
+  "author": "Khalid <shkhalid95@mail.ru>",
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn nodemon",
+    "build": "yarn tsc",
+    "production": "yarn run build && node dest/index",
+    "lint": "yarn eslint ./src",
+    "lint:fix": "yarn eslint ./src --fix",
+    "pretty": "yarn prettier ./src --fix"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.12",
+    "@types/uuid": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.29.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.1",
+    "nodemon": "^2.0.20",
+    "prettier": "2.7.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4",
+    "uuid": "^9.0.0"
+  },
+  "resolutions": {
+    "debug": "4.3.4",
+    "semver": "7.3.8",
+    "eslint-visitor-keys": "3.3.0",
+    "glob-parent": "5.1.2",
+    "eslint-scope": "5.1.1",
+    "eslint-utils": "3.0.0",
+    "estraverse": "4.3.0",
+    "ms": "2.1.2",
+    "doctrine": "2.1.0",
+    "supports-color": "7.2.0",
+    "has-flag": "4.0.0"
+  }
+}
