@@ -1,18 +1,25 @@
 {
-	"compilerOptions": {
-		"target": "es6",
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"sourceMap": true,
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["esnext"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true, 
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "resolveJsonModule": true,
 		"outDir": "./dist",
-		"removeComments": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"strict": true,
-		"strictPropertyInitialization": false,
-		"skipLibCheck": true
-	}
+		"sourceMap": true,
+		"removeComments": true,  
+		"strictPropertyInitialization": true
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "include": ["./src/**/*"]
 }

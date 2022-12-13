@@ -1,23 +1,17 @@
 import { RandomUUIDOptions } from 'crypto';
-
-type User = { uuid: RandomUUIDOptions | string; name: string; age: number; hobbies: string[] };
-type UserActions = {
-	addUser: (user: User) => void;
-	getUserByID: (id: RandomUUIDOptions | string) => void;
-	removeUser: (id: RandomUUIDOptions | string) => void;
-	updateUser: (newUser: User) => void;
-};
+import { User, UserActions } from '.';
 
 const createUsersStore = (): UserActions => {
 	let users: User[] = [];
 
 	return {
-		addUser: (user: User) => users.push(user),
-		getUserByID: (uuid: string | RandomUUIDOptions) => users.find((user) => user.uuid === uuid),
-		removeUser: (uuid: RandomUUIDOptions | string): void => {
+		getUsers: () => users,
+		addUser: (user) => users.push(user),
+		getUserByID: (uuid) => users.find((user) => user.uuid === uuid),
+		removeUser: (uuid): void => {
 			users = users.filter((user) => user.uuid !== uuid);
 		},
-		updateUser: (updatedUser: User): void => {
+		updateUser: (updatedUser): void => {
 			users = users.map((user) => {
 				if (user.uuid !== updatedUser.uuid) {
 					return user;
