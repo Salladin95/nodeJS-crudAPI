@@ -1,11 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "airbnb",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["plugin:@typescript-eslint/recommended", "prettier", "plugin:prettier/recommended"],
   "root": true,
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -15,9 +10,9 @@
   "rules": {
     "comma-dangle": ["error", "only-multiline"],
     "prettier/prettier": ["error", { "endOfLine": "auto" }],
+    "@typescript-eslint/no-var-reqiures": "off",
     "@typescript-eslint/ban-ts-comment": "error",
     "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-var-reqiures": "error"
+    "@typescript-eslint/no-explicit-any": "error"
   }
 }

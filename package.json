@@ -6,12 +6,15 @@
   "type": "commonjs",
   "scripts": {
     "start": "nodemon",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint --fix src/",
+    "pretty": "prettier --write .",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^18.11.14",
+    "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "dotenv": "^16.0.3",
     "eslint": "^8.29.0",

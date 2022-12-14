@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 import http from 'http';
-import nodeURL from 'url';
 
-import { createUserHandle, getUsersHandle } from './models';
+import { writeResponse } from './uitls';
+import { createUserHandle, getUserByIDHandle, getUsersHandle } from './models';
 import { createUsersStore } from './store';
 
 dotenv.config();
@@ -15,21 +15,20 @@ const userIDReg = /api\/users\/[a-z0-9]/gi;
 const store = createUsersStore();
 
 const myServer = http.createServer((request, response) => {
-	const method = request.method;
-	const url = request.url;
+  const method = request.method;
+  const url = request.url;
 
-	if (method === 'GET' && url === BASE_URL) {
-		getUsersHandle(response, store);
-	} else if (method === 'GET' && url?.match(userIDReg)) {
-		console.log({ url });
-		const urlRequest = nodeURL.parse(url ?? '', true);
-		console.log({ urlRequest });
-		// getUserBYID
-	} else if (method === 'POST' && url === BASE_URL) {
-		(async () => {
-			await createUserHandle({ request, response, store });
-		})();
-	}
+  if ((method === 'GET' && url === BASE_URL) || url === BASE_URL + '/') {
+    getUsersHandle({ response, store });
+  } else if (method === 'GET' && url?.match(userIDReg)) {
+    getUserByIDHandle({ response, request, store });
+  } else if (method === 'POST' && url === BASE_URL) {
+    (async () => {
+      await createUserHandle({ request, response, store });
+    })();
+  } else {
+    writeResponse({ code: 404, response, data: 'PAGE NOUT FOUND', responseType: 'text' });
+  }
 });
 
 myServer.listen(PORT, () => console.log(`server is running on port: ${PORT}`));

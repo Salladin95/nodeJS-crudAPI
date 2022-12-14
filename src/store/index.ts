@@ -3,12 +3,12 @@ import createUser, { UserWithoutID } from './createUser';
 import createUsersStore from './createStore';
 
 export {
-	isUser,
-	User,
-	UserActionFields,
-	UserActions,
-	UserFields,
-	UserWithoutID,
-	createUser,
-	createUsersStore,
+  isUser,
+  User,
+  UserActionFields,
+  UserActions,
+  UserFields,
+  UserWithoutID,
+  createUser,
+  createUsersStore,
 };

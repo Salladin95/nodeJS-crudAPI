@@ -1,5 +1,15 @@
 import createUserHandle from './createUserHandle';
 import getUsersHandle from './getUsersHandle';
+import getUserByIDHandle from './getUserByIDHandle';
 import { HandleRequestFN } from './contracts';
+import getId, { idIsNotUUID, idNotProvidedMsg } from './getId';
 
-export { createUserHandle, getUsersHandle, HandleRequestFN };
+export {
+  idNotProvidedMsg,
+  idIsNotUUID,
+  createUserHandle,
+  getId,
+  getUserByIDHandle,
+  getUsersHandle,
+  HandleRequestFN,
+};
