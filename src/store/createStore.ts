@@ -8,7 +8,12 @@ const createUsersStore = (): UserActions => {
     addUser: (user) => users.push(user),
     getUserByID: (uuid) => users.find((user) => user.uuid === uuid),
     removeUser: (uuid) => {
-      users = users.filter((user) => user.uuid !== uuid);
+      const userIndex = users.findIndex((user) => user.uuid === uuid);
+      if (userIndex === -1) {
+        return false;
+      }
+      users.splice(userIndex, 1);
+      return true;
     },
     updateUser: (updatedUser) => {
       users = users.map((user) => {

@@ -6,7 +6,7 @@ const userFieldsArr = ['name', 'age', 'hobbies'];
 type UserActions = {
   addUser: (user: User) => void;
   getUserByID: (id: string) => User | undefined;
-  removeUser: (id: string) => void;
+  removeUser: (id: string) => boolean;
   updateUser: (newUser: User) => void;
   getUsers: () => User[];
 };
