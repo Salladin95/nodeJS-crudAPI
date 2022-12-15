@@ -1,7 +1,5 @@
 import { v4 } from 'uuid';
-import { User } from './contracts';
-
-export type UserWithoutID = Omit<User, 'uuid'>;
+import { User, UserWithoutID } from './';
 
 const createUser = ({ name, age, hobbies }: UserWithoutID): User => ({
   uuid: v4(),

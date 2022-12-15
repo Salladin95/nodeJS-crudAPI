@@ -1,5 +1,11 @@
 import { writeResponse } from '../uitls';
-import { createUserHandle, deleteUserHandle, getUserByIDHandle, getUsersHandle } from '../models';
+import {
+  createUserHandle,
+  updateUserHandle,
+  deleteUserHandle,
+  getUserByIDHandle,
+  getUsersHandle,
+} from '../models';
 import { HandleRequestParams } from '../models/contracts';
 
 const userIDReg = /^\/api\/users\/[a-z0-9\-]+\/?$/;
@@ -21,13 +27,13 @@ const router = async ({ method, endpoint, store, response, request }: RouterPara
       getUsersHandle({ response, store });
     } else if (method === 'POST') {
       await createUserHandle({ request, response, store });
-    } else if (method === 'PUT') {
-      //
     }
   } else if (method === 'GET') {
     getUserByIDHandle({ response, request, store });
   } else if (method === 'DELETE') {
     deleteUserHandle({ response, store, request });
+  } else if (method === 'PUT') {
+    await updateUserHandle({ response, request, store });
   }
 };
 

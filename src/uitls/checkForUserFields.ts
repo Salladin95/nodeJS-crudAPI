@@ -1,5 +1,4 @@
-import { isUser, User, UserFields } from '../store/contracts';
-import { UserWithoutID } from '../store/createUser';
+import { UserFields, UserWithoutID } from '../store/';
 import { badJsonMessage } from './constants';
 
 const isItString = (str: unknown) => typeof str === 'string';

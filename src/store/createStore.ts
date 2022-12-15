@@ -1,4 +1,4 @@
-import { User, UserActions } from '.';
+import { User, UserActions, UserWithoutID } from '.';
 
 const createUsersStore = (): UserActions => {
   let users: User[] = [];
@@ -12,15 +12,15 @@ const createUsersStore = (): UserActions => {
       if (userIndex === -1) {
         return false;
       }
-      users.splice(userIndex, 1);
+      users = users.filter((user) => user.uuid !== uuid);
       return true;
     },
-    updateUser: (updatedUser) => {
+    updateUser: (uuid: string, updatedUser: UserWithoutID) => {
       users = users.map((user) => {
-        if (user.uuid !== updatedUser.uuid) {
+        if (uuid !== user.uuid) {
           return user;
         }
-        return updatedUser;
+        return { uuid, ...updatedUser };
       });
     },
   };

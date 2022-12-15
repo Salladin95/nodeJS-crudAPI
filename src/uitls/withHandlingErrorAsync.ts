@@ -1,3 +1,4 @@
+import { userNotFoundMsg } from '../uitls';
 import { HandleRequestFN } from '../models';
 import getErrorMessage from './getErrorMessage';
 import writeResponse from './writeResponse';
@@ -18,11 +19,13 @@ const withHandlingErrorAsync = (fn: (params: WithHandlingError) => Promise<void>
     try {
       await fn({ response, request, store });
     } catch (err) {
+      const errMsg = getErrorMessage(err);
+      const code = userNotFoundMsg === errMsg ? 404 : errorCode;
       writeResponse({
-        code: errorCode,
         response,
-        data: getErrorMessage(err),
+        code,
         responseType: errorType,
+        data: errMsg,
       });
     }
   };
