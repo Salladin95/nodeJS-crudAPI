@@ -10,7 +10,7 @@ const createApp = (store: UserActions, cluster?: Cluster) =>
     const endpoint = request.url;
     (async () => {
       await router({ method, store, endpoint, response, request });
-      cluster && cluster.worker?.kill();
+      // cluster && cluster.worker?.kill();
     })();
   });
 
