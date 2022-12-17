@@ -1,7 +1,7 @@
 import { parse } from 'url';
 import { validate } from 'uuid';
 
-import { checkLength } from '../uitls';
+import { checkLength } from '../utils';
 
 export const idNotProvidedMsg = 'ID not provided';
 export const idIsNotUUID = 'ID is not a is a valid UUID';

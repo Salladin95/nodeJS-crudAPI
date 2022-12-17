@@ -1,13 +1,13 @@
 import { HandleRequestFN, getId } from '.';
-import { withHandlingErrorSync, writeResponse, userNotFoundMsg } from '../uitls';
+import { writeResponse, userNotFoundMsg, withHandlingErrorAsync } from '../utils';
 
-const deleteUserHandle = ({ response, request, store }: HandleRequestFN): void => {
+const deleteUserHandle = async ({ response, request, store }: HandleRequestFN) => {
   const id = getId(request?.url);
-  const user = store.removeUser(id);
+  const user = await store.removeUser(id);
   if (!user) {
     throw new Error(userNotFoundMsg);
   }
   writeResponse({ response, responseType: 'JSON', code: 204, data: JSON.stringify(user) });
 };
 
-export default withHandlingErrorSync(deleteUserHandle);
+export default withHandlingErrorAsync(deleteUserHandle);

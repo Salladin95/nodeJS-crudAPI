@@ -1,5 +1,3 @@
-import { badJsonMessage } from './constants';
-
 const safeJsonParse =
   <T>(guard: (o: unknown) => o is T) =>
   (text: string): T | null => {

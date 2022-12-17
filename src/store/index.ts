@@ -1,17 +1,13 @@
-import {
-  isUser,
-  User,
-  UserActions,
-  UserFields,
-  UserActionFields,
-  UserWithoutID,
-  userFieldsArr,
-} from './contracts';
+import { User, UserActions, UserFields, UserActionFields, UserWithoutID } from './contracts';
 import createUser from './createUser';
-import createUsersStore from './createStore';
+import createStore from './createStore';
+import isUserWithoutId from './isUserWithoutId';
+import isUser from './isUser';
+import isArrayOfUsers from './isArrayOfUsers';
 
 export {
-  userFieldsArr,
+  isArrayOfUsers,
+  isUserWithoutId,
   isUser,
   User,
   UserActionFields,
@@ -19,5 +15,5 @@ export {
   UserFields,
   UserWithoutID,
   createUser,
-  createUsersStore,
+  createStore,
 };

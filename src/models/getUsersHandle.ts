@@ -1,9 +1,10 @@
 import { HandleRequestFN } from '.';
-import getContentType from '../uitls/getContentType';
+import { getContentType, withHandlingErrorAsync } from '../utils/';
 
-const getUsersHandle = ({ response, store }: HandleRequestFN): void => {
+const getUsersHandle = async ({ response, store }: HandleRequestFN) => {
+  const users = await store.getUsers();
   response.writeHead(200, getContentType('json'));
-  response.end(JSON.stringify(store.getUsers()));
+  response.end(JSON.stringify(users));
 };
 
-export default getUsersHandle;
+export default withHandlingErrorAsync(getUsersHandle);

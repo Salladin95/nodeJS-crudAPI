@@ -1,17 +1,15 @@
-import http from 'http';
-import { PORT } from './uitls';
+import { isWithWorkers, PORT } from './utils';
+import { createStore } from './store';
+import createApp from './server';
+import runWithWorkers from './worker';
+import cluster from 'cluster';
 
-import router from './router';
-import { createUsersStore } from './store';
+const store = createStore();
 
-const store = createUsersStore();
-
-const myServer = http.createServer((request, response) => {
-  const method = request.method;
-  const endpoint = request.url;
-  (async () => {
-    await router({ method, store, endpoint, response, request });
-  })();
-});
-
-myServer.listen(PORT, () => console.log(`server is running on port: ${PORT}`));
+if (isWithWorkers()) {
+  const app = createApp(store, cluster);
+  runWithWorkers(app);
+} else {
+  const app = createApp(store);
+  app.listen(PORT, () => console.log(`server is running on port: ${PORT}`));
+}

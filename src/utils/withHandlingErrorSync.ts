@@ -1,7 +1,7 @@
 import { HandleRequestFN } from '../models';
 import getErrorMessage from './getErrorMessage';
 import writeResponse from './writeResponse';
-import { userNotFoundMsg } from '../uitls';
+import { userNotFoundMsg } from '../utils';
 
 export type WithHandlingError = HandleRequestFN & {
   errorCode?: number;

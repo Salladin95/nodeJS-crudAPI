@@ -1,4 +1,4 @@
-import { writeResponse } from '../uitls';
+import { writeResponse } from '../utils';
 import {
   createUserHandle,
   updateUserHandle,
@@ -24,7 +24,7 @@ const router = async ({ method, endpoint, store, response, request }: RouterPara
 
   if (endpoint.match(baseUrlReg)) {
     if (method === 'GET') {
-      getUsersHandle({ response, store });
+      await getUsersHandle({ response, store });
     } else if (method === 'POST') {
       await createUserHandle({ request, response, store });
     }

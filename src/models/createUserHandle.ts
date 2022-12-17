@@ -1,12 +1,12 @@
 import { HandleRequestFN } from './';
-import { createUser, isUser, UserWithoutID } from '../store';
+import { createUser, UserWithoutID, isUserWithoutId } from '../store';
 import {
   safeJsonParse,
   badJsonMessage,
   checkForUserFields,
   writeResponse,
   withHandlingErrorAsync,
-} from '../uitls';
+} from '../utils';
 
 const createUserHandle = ({ request, response, store }: HandleRequestFN): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -17,13 +17,13 @@ const createUserHandle = ({ request, response, store }: HandleRequestFN): Promis
 
     request?.on('end', async () => {
       try {
-        const parsedBody = safeJsonParse<UserWithoutID>(isUser)(body);
+        const parsedBody = safeJsonParse<UserWithoutID>(isUserWithoutId)(body);
         if (!parsedBody) {
           reject(badJsonMessage);
         } else {
           checkForUserFields(parsedBody);
           const user = createUser(parsedBody);
-          store.addUser(user);
+          await store.addUser(user);
           writeResponse({ code: 200, response, data: JSON.stringify(user), responseType: 'json' });
           resolve();
         }

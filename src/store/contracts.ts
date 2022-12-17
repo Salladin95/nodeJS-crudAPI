@@ -1,26 +1,14 @@
 type User = { uuid: string; name: string; age: number; hobbies: string[] };
 type UserFields = keyof Omit<User, 'uuid'>;
 type UserWithoutID = Omit<User, 'uuid'>;
-const userFieldsArr = ['name', 'age', 'hobbies'];
 
 type UserActions = {
-  addUser: (user: User) => void;
-  getUserByID: (id: string) => User | undefined;
-  removeUser: (id: string) => boolean;
-  updateUser: (id: string, user: UserWithoutID) => void;
-  getUsers: () => User[];
+  addUser: (user: User) => Promise<void>;
+  getUserByID: (id: string) => Promise<User | undefined>;
+  removeUser: (id: string) => Promise<boolean>;
+  updateUser: (id: string, user: UserWithoutID) => Promise<void>;
+  getUsers: () => Promise<User[]>;
 };
 type UserActionFields = keyof UserActions;
 
-const isUser = (user: unknown): user is User => {
-  let flag = false;
-  if (user instanceof Object) {
-    const userKeys = Object.keys(user);
-    if (userKeys.length === userFieldsArr.length) {
-      flag = userKeys.every((key) => userFieldsArr.includes(key));
-    }
-  }
-  return flag;
-};
-
-export { User, UserActions, UserActionFields, UserFields, isUser, UserWithoutID, userFieldsArr };
+export { User, UserActions, UserActionFields, UserFields, UserWithoutID };

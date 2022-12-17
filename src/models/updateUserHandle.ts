@@ -1,5 +1,5 @@
 import { getId, HandleRequestFN } from './';
-import { isUser, UserWithoutID } from '../store';
+import { isUserWithoutId, UserWithoutID } from '../store';
 import {
   safeJsonParse,
   badJsonMessage,
@@ -7,7 +7,7 @@ import {
   writeResponse,
   withHandlingErrorAsync,
   userNotFoundMsg,
-} from '../uitls';
+} from '../utils';
 
 const updateUserHandle = ({ request, response, store }: HandleRequestFN): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -18,18 +18,18 @@ const updateUserHandle = ({ request, response, store }: HandleRequestFN): Promis
 
     request?.on('end', async () => {
       try {
-        const parsedBody = safeJsonParse<UserWithoutID>(isUser)(body);
+        const parsedBody = safeJsonParse<UserWithoutID>(isUserWithoutId)(body);
         if (!parsedBody) {
           reject(badJsonMessage);
         } else {
           checkForUserFields(parsedBody);
           const id = getId(request?.url);
-          const user = store.getUserByID(id);
+          const user = await store.getUserByID(id);
           if (!user) {
             throw new Error(userNotFoundMsg);
           }
-          store.updateUser(id, parsedBody);
-          const updatedUser = store.getUserByID(id);
+          await store.updateUser(id, parsedBody);
+          const updatedUser = await store.getUserByID(id);
           writeResponse({
             code: 200,
             response,

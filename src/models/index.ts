@@ -5,8 +5,10 @@ import getUserByIDHandle from './getUserByIDHandle';
 import { HandleRequestParams } from './contracts';
 import getId, { idIsNotUUID, idNotProvidedMsg } from './getId';
 import deleteUserHandle from './deleteUserHandle';
+import { getContentType } from '../utils';
 
 export {
+  getContentType,
   updateUserHandle,
   deleteUserHandle,
   idNotProvidedMsg,

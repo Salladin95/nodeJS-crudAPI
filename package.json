@@ -5,10 +5,13 @@
   "main": "index.ts",
   "type": "commonjs",
   "scripts": {
-    "start": "nodemon",
+    "start:dev": "nodemon",
+    "start:prod": "tsc && node ./dist/index.js",
+    "start:multi": "nodemon -- -withWorkers",
     "lint": "eslint --fix src/",
     "pretty": "prettier --write .",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",

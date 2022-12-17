@@ -1,4 +1,4 @@
-import { userNotFoundMsg } from '../uitls';
+import { userNotFoundMsg } from '../utils';
 import { HandleRequestFN } from '../models';
 import getErrorMessage from './getErrorMessage';
 import writeResponse from './writeResponse';
