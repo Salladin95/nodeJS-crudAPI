@@ -1,27 +1,48 @@
-import { spawn } from 'child_process';
 import cluster from 'cluster';
-import { Server } from 'http';
+import EventEmitter from 'events';
+import { fork } from 'child_process';
+import { createServer, Server } from 'http';
 import { cpus } from 'os';
 import { resolve } from 'path';
 import { cwd } from 'process';
 
-import { PORT } from '../utils';
+import { actionEvents, getMinOf, PORT, sendMessage } from '../utils';
 
 const amountOfCpus = cpus().length;
-const targetFile = resolve(cwd(), 'db', 'db.ts');
-const child = spawn('node', [targetFile]).once();
 
-const runWithWorkers = (app: Server) => {
+const runWithWorkers = (app: Server, emitter: EventEmitter) => {
   if (cluster.isPrimary) {
-    console.log(`Master ${process.pid} is running`);
+    let hostNumber = 1;
+    createServer((request, response) => {
+      const currentHost = +PORT + getMinOf(hostNumber, amountOfCpus);
+      const newUrl = `http://localhost:${currentHost}${request.url}`;
+      response.writeHead(302, { Location: newUrl });
+      response.end('');
+      if (amountOfCpus > hostNumber) {
+        hostNumber++;
+      } else {
+        hostNumber = 1;
+      }
+    }).listen(PORT, () => console.log(`Master server: ${process.pid} is running on port: ${PORT}`));
+
+    const targetFile = resolve(cwd(), 'src', 'cp/cp.ts');
+
+    const child = fork(targetFile);
+    cluster.on('message', (worker, msg) => {
+      child.send(msg);
+      child.once('message', (msg) => worker.send(msg));
+    });
+
     for (let index = 0; index < amountOfCpus; index++) {
       cluster.fork({ port: +PORT + index + 1 });
     }
     cluster.on('exit', (worker, code, signal) => {
       console.log(`worker ${worker.process.pid} died, code: ${code}, signal: ${signal}`);
-      // cluster.fork();
     });
   } else if (cluster.isWorker) {
+    emitter.on(actionEvents.action, (msg) => sendMessage(msg));
+    process.on('message', (msg) => emitter.emit(actionEvents.actionResponse, msg));
+
     const env = process.env.port;
     const currentPort = env ? +env : PORT;
     app.listen(currentPort, () =>

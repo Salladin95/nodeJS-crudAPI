@@ -1,13 +1,25 @@
+import { isUser, User } from '../store';
 import { HandleRequestFN, getId } from '.';
-import { withHandlingErrorAsync, writeResponse, userNotFoundMsg } from '../utils';
+import {
+  actionEvents,
+  safeJsonParse,
+  userNotFoundMsg,
+  withHandlingErrorSync,
+  writeResponse,
+} from '../utils';
 
-const getUserByIDHandle = async ({ response, request, store }: HandleRequestFN) => {
+const getUserByIDHandle = ({ response, request, emitter }: HandleRequestFN) => {
   const id = getId(request?.url);
-  const user = await store.getUserByID(id);
-  if (!user) {
-    throw new Error(userNotFoundMsg);
-  }
-  writeResponse({ response, responseType: 'JSON', code: 200, data: JSON.stringify(user) });
+  const message = JSON.stringify({ message: 'getUserByID', data: id });
+  emitter.emit(actionEvents.action, message);
+  emitter.once(actionEvents.actionResponse, (msg) => {
+    if (msg === userNotFoundMsg) {
+      writeResponse({ response, responseType: 'JSON', code: 404, data: userNotFoundMsg });
+      return;
+    }
+    const user = safeJsonParse<User>(isUser)(msg);
+    writeResponse({ response, responseType: 'JSON', code: 200, data: JSON.stringify(user) });
+  });
 };
 
-export default withHandlingErrorAsync(getUserByIDHandle);
+export default withHandlingErrorSync(getUserByIDHandle);

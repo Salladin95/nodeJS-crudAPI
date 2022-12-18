@@ -1,5 +1,4 @@
 import { UserFields, UserWithoutID } from '../store/';
-import { badJsonMessage } from './constants';
 
 const isItString = (str: unknown) => typeof str === 'string';
 const isItNumber = (num: unknown) => typeof num === 'number';
@@ -12,13 +11,11 @@ const checkUser: Record<UserFields, <DataT>(data: DataT) => boolean> = {
   hobbies: <DataT>(hobbies: DataT) => isItArray(hobbies) && (hobbies as DataT[]).every(isItString),
 };
 
-const checkForUserFields = (user: UserWithoutID): Promise<boolean | undefined> => {
-  return new Promise((resolve, reject) => {
-    if (!Object.keys(user).every((key) => checkUser[key as UserFields](user[key as UserFields]))) {
-      reject(badJsonMessage);
-    }
-    resolve(true);
-  });
+const checkForUserFields = (user: UserWithoutID): boolean => {
+  if (!Object.keys(user).every((key) => checkUser[key as UserFields](user[key as UserFields]))) {
+    return false;
+  }
+  return true;
 };
 
 export default checkForUserFields;

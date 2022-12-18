@@ -1,17 +1,13 @@
-import { Cluster } from 'cluster';
 import { createServer } from 'http';
+import { EventEmitter } from 'stream';
 
-import { UserActions } from 'store';
 import router from '../router';
 
-const createApp = (store: UserActions, cluster?: Cluster) =>
+const createApp = (emitter: EventEmitter) =>
   createServer((request, response) => {
     const method = request.method;
     const endpoint = request.url;
-    (async () => {
-      await router({ method, store, endpoint, response, request });
-      // cluster && cluster.worker?.kill();
-    })();
+    router({ method, emitter, endpoint, response, request });
   });
 
 export default createApp;

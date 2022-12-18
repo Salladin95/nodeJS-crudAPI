@@ -12,20 +12,18 @@ const withHandlingErrorAsync = (fn: (params: WithHandlingError) => Promise<void>
   return async ({
     response,
     request,
-    store,
+    emitter,
     errorCode = 400,
     errorType = 'text',
   }: WithHandlingError) => {
     try {
-      await fn({ response, request, store });
+      await fn({ response, request, emitter });
     } catch (err) {
-      const errMsg = getErrorMessage(err);
-      const code = userNotFoundMsg === errMsg ? 404 : errorCode;
       writeResponse({
         response,
-        code,
+        code: errorCode,
         responseType: errorType,
-        data: errMsg,
+        data: getErrorMessage(err),
       });
     }
   };
