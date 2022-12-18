@@ -1,5 +1,5 @@
 import checkForUserFields from './checkForUserFields';
-import { badJsonMessage, operationErrMsg, userNotFoundMsg } from './constants';
+import { actionEvents, badJsonMessage, operationErrMsg, userNotFoundMsg } from './constants';
 import getContentType from './getContentType';
 import getErrorMessage from './getErrorMessage';
 import withHandlingErrorSync from './withHandlingErrorSync';
@@ -11,8 +11,11 @@ import { BASE_URL, PORT } from './envirenments';
 import { getDirname, getFileNameAndDirname } from './getDirname';
 import isWithWorkers from './isClusterMode';
 import getCLIArgs from './getCLIargs';
+import sendMessage from './sendMessage';
 
 export {
+  actionEvents,
+  sendMessage,
   getCLIArgs,
   isWithWorkers,
   getDirname,

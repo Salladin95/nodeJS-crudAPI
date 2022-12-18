@@ -1,13 +1,17 @@
 import { HandleRequestFN, getId } from '.';
-import { writeResponse, userNotFoundMsg, withHandlingErrorAsync } from '../utils';
+import { writeResponse, userNotFoundMsg, actionEvents, withHandlingErrorSync } from '../utils';
 
-const deleteUserHandle = async ({ response, request, store }: HandleRequestFN) => {
+const deleteUserHandle = ({ response, request, emitter }: HandleRequestFN) => {
   const id = getId(request?.url);
-  const user = await store.removeUser(id);
-  if (!user) {
-    throw new Error(userNotFoundMsg);
-  }
-  writeResponse({ response, responseType: 'JSON', code: 204, data: JSON.stringify(user) });
+  const message = JSON.stringify({ message: 'removeUser', data: id });
+  emitter.emit(actionEvents.action, message);
+  emitter.once(actionEvents.actionResponse, (msg) => {
+    if (msg === userNotFoundMsg) {
+      writeResponse({ response, responseType: 'text', code: 404, data: userNotFoundMsg });
+      return;
+    }
+    writeResponse({ response, responseType: 'text', code: 204, data: msg });
+  });
 };
 
-export default withHandlingErrorAsync(deleteUserHandle);
+export default withHandlingErrorSync(deleteUserHandle);

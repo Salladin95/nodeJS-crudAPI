@@ -1,10 +1,10 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { UserActions } from '../store';
+import { EventEmitter } from 'stream';
 
 export type HandleRequestParams = {
   request?: IncomingMessage;
   response: ServerResponse<IncomingMessage> & {
     req: IncomingMessage;
   };
-  store: UserActions;
+  emitter: EventEmitter;
 };

@@ -1,37 +1,30 @@
 import { HandleRequestFN } from './';
-import { createUser, UserWithoutID, isUserWithoutId } from '../store';
-import {
-  safeJsonParse,
-  badJsonMessage,
-  checkForUserFields,
-  writeResponse,
-  withHandlingErrorAsync,
-} from '../utils';
+import { isUser, User } from '../store';
+import { actionEvents, badJsonMessage, safeJsonParse, writeResponse } from '../utils';
 
-const createUserHandle = ({ request, response, store }: HandleRequestFN): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    let body = '';
-    request?.on('data', (chunk) => {
-      body += chunk.toString();
-    });
+const createUserHandle = ({ request, response, emitter }: HandleRequestFN): void => {
+  let body = '';
+  request?.on('data', (chunk) => {
+    body += chunk.toString();
+  });
 
-    request?.on('end', async () => {
-      try {
-        const parsedBody = safeJsonParse<UserWithoutID>(isUserWithoutId)(body);
-        if (!parsedBody) {
-          reject(badJsonMessage);
-        } else {
-          checkForUserFields(parsedBody);
-          const user = createUser(parsedBody);
-          await store.addUser(user);
-          writeResponse({ code: 200, response, data: JSON.stringify(user), responseType: 'json' });
-          resolve();
-        }
-      } catch {
-        reject(badJsonMessage);
+  request?.on('end', async () => {
+    const message = JSON.stringify({ message: 'addUser', data: body });
+    emitter.emit(actionEvents.action, message);
+    emitter.once(actionEvents.actionResponse, (msg) => {
+      if (msg === badJsonMessage) {
+        writeResponse({ response, responseType: 'JSON', code: 400, data: badJsonMessage });
+        return;
       }
+      const user = safeJsonParse<User>(isUser)(msg);
+      writeResponse({
+        response,
+        responseType: 'JSON',
+        code: 200,
+        data: JSON.stringify(user),
+      });
     });
   });
 };
 
-export default withHandlingErrorAsync(createUserHandle);
+export default createUserHandle;

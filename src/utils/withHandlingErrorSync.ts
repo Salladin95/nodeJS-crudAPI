@@ -11,15 +11,20 @@ export type WithHandlingError = HandleRequestFN & {
 type ErrorHandlingWrappedFN = (params: WithHandlingError) => void;
 
 const withHandlingErrorSync = (fn: ErrorHandlingWrappedFN) => {
-  return ({ response, errorType = 'text', errorCode = 400, store, request }: WithHandlingError) => {
+  return ({
+    response,
+    errorType = 'text',
+    errorCode = 400,
+    emitter,
+    request,
+  }: WithHandlingError) => {
     try {
-      fn({ response, request, store });
+      fn({ response, request, emitter });
     } catch (err) {
       const errMsg = getErrorMessage(err);
-      const code = userNotFoundMsg === errMsg ? 404 : errorCode;
       writeResponse({
         response,
-        code,
+        code: errorCode,
         responseType: errorType,
         data: errMsg,
       });

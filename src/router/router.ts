@@ -16,7 +16,7 @@ export type RouterParams = {
   endpoint: string | undefined;
 } & HandleRequestParams;
 
-const router = async ({ method, endpoint, store, response, request }: RouterParams) => {
+const router = ({ method, endpoint, emitter, response, request }: RouterParams) => {
   if (!endpoint?.match(baseUrlReg) && !endpoint?.match(userIDReg)) {
     writeResponse({ code: 404, response, data: 'PAGE NOUT FOUND', responseType: 'text' });
     return;
@@ -24,16 +24,16 @@ const router = async ({ method, endpoint, store, response, request }: RouterPara
 
   if (endpoint.match(baseUrlReg)) {
     if (method === 'GET') {
-      await getUsersHandle({ response, store });
+      getUsersHandle({ response, emitter });
     } else if (method === 'POST') {
-      await createUserHandle({ request, response, store });
+      createUserHandle({ request, response, emitter });
     }
   } else if (method === 'GET') {
-    getUserByIDHandle({ response, request, store });
+    getUserByIDHandle({ response, request, emitter });
   } else if (method === 'DELETE') {
-    deleteUserHandle({ response, store, request });
+    deleteUserHandle({ response, emitter, request });
   } else if (method === 'PUT') {
-    await updateUserHandle({ response, request, store });
+    updateUserHandle({ response, request, emitter });
   }
 };
 

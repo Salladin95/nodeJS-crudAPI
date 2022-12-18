@@ -1,48 +1,47 @@
 import { getId, HandleRequestFN } from './';
-import { isUserWithoutId, UserWithoutID } from '../store';
+import { isUser, User } from '../store';
 import {
   safeJsonParse,
   badJsonMessage,
-  checkForUserFields,
   writeResponse,
-  withHandlingErrorAsync,
   userNotFoundMsg,
+  actionEvents,
+  getErrorMessage,
 } from '../utils';
 
-const updateUserHandle = ({ request, response, store }: HandleRequestFN): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    let body = '';
-    request?.on('data', (chunk) => {
-      body += chunk.toString();
-    });
+const updateUserHandle = ({ request, response, emitter }: HandleRequestFN): void => {
+  let body = '';
+  request?.on('data', (chunk) => {
+    body += chunk.toString();
+  });
 
-    request?.on('end', async () => {
-      try {
-        const parsedBody = safeJsonParse<UserWithoutID>(isUserWithoutId)(body);
-        if (!parsedBody) {
-          reject(badJsonMessage);
-        } else {
-          checkForUserFields(parsedBody);
-          const id = getId(request?.url);
-          const user = await store.getUserByID(id);
-          if (!user) {
-            throw new Error(userNotFoundMsg);
-          }
-          await store.updateUser(id, parsedBody);
-          const updatedUser = await store.getUserByID(id);
-          writeResponse({
-            code: 200,
-            response,
-            data: JSON.stringify(updatedUser),
-            responseType: 'json',
-          });
-          resolve();
+  request?.on('end', async () => {
+    try {
+      const id = getId(request?.url);
+      const data = JSON.stringify({ user: body, id });
+      const message = JSON.stringify({ message: 'updateUser', data });
+      emitter.emit(actionEvents.action, message);
+      emitter.once(actionEvents.actionResponse, (msg) => {
+        if (msg === badJsonMessage) {
+          writeResponse({ response, responseType: 'text', code: 400, data: badJsonMessage });
+          return;
+        } else if (msg === userNotFoundMsg) {
+          writeResponse({ response, responseType: 'text', code: 404, data: userNotFoundMsg });
+          return;
         }
-      } catch (err) {
-        reject(err);
-      }
-    });
+        const user = safeJsonParse<User>(isUser)(msg);
+        writeResponse({
+          response,
+          responseType: 'JSON',
+          code: 200,
+          data: JSON.stringify(user),
+        });
+      });
+    } catch (err) {
+      const message = getErrorMessage(err);
+      writeResponse({ response, responseType: 'text', code: 400, data: message });
+    }
   });
 };
 
-export default withHandlingErrorAsync(updateUserHandle);
+export default updateUserHandle;
