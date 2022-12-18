@@ -12,8 +12,12 @@ import { getDirname, getFileNameAndDirname } from './getDirname';
 import isWithWorkers from './isClusterMode';
 import getCLIArgs from './getCLIargs';
 import sendMessage from './sendMessage';
-
+import { getValueFromStringAfterSeparator, getValueFromStringBeforeSeparator } from './stringUtils';
+import getMinOf from './getMin';
 export {
+  getMinOf,
+  getValueFromStringBeforeSeparator,
+  getValueFromStringAfterSeparator,
   actionEvents,
   sendMessage,
   getCLIArgs,
