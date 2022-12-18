@@ -8,6 +8,8 @@ import {
 } from '../utils';
 import { EventPayload, isEventPayload } from './eventPayload';
 
+console.log('laucn child process');
+
 const store = createStore();
 
 process.on('message', (request) => {
@@ -71,16 +73,3 @@ process.on('message', (request) => {
     }
   }
 });
-
-const user1 = {
-  name: 'rooааney',
-  age: 26,
-  hobbies: ['footbik'],
-};
-const user2 = {
-  name: 'rasul',
-  age: 26,
-  hobbies: ['footbik'],
-};
-store.addUser(createUser(user1));
-store.addUser(createUser(user2));

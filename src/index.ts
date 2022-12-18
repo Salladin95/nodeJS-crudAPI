@@ -11,7 +11,7 @@ const emitter = new EventEmitter();
 
 if (isWithWorkers()) {
   const app = createApp(emitter);
-  runWithWorkers(app);
+  runWithWorkers(app, emitter);
 } else {
   const targetFile = resolve(cwd(), 'src', 'cp/cp.ts');
   const child = fork(targetFile);
