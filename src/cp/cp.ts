@@ -1,74 +1,69 @@
 import { createStore, createUser, isUserWithoutId, UserWithoutID } from '../store';
 import {
-  badJsonMessage,
   checkForUserFields,
+  getErrorMessage,
   safeJsonParse,
   sendMessage,
   userNotFoundMsg,
 } from '../utils';
-import { EventPayload, isEventPayload } from './eventPayload';
+import {
+  EventPayload,
+  isEventPayload,
+  isUpdateUserPayload,
+  UpdateUserPayload,
+} from './eventPayload';
 
 console.log('laucn child process');
 
 const store = createStore();
 
+process.on('uncaughtException', (err) => {
+  const errMessage = { errorMessage: getErrorMessage(err) };
+  sendMessage(JSON.stringify(errMessage));
+});
+
 process.on('message', (request) => {
   if (typeof request === 'string') {
     const parsedRequest = safeJsonParse<EventPayload>(isEventPayload)(request);
-    if (!parsedRequest) {
-      return;
-    }
     if (parsedRequest.message === 'getUsers') {
       const users = JSON.stringify(store.getUsers());
       sendMessage(users);
     } else if (parsedRequest.message === 'getUserByID') {
       if (parsedRequest.data) {
         const user = store.getUserByID(parsedRequest.data);
-        if (user) {
-          sendMessage(JSON.stringify(user));
-        } else {
-          sendMessage(userNotFoundMsg);
+        if (!user) {
+          throw new Error(userNotFoundMsg);
         }
+        sendMessage(JSON.stringify(user));
       }
     } else if (parsedRequest.message === 'removeUser') {
       if (parsedRequest.data) {
         const user = store.getUserByID(parsedRequest.data);
-        if (user) {
-          store.removeUser(user.uuid);
-          sendMessage(`user: ${user.name} is removed`);
-        } else {
-          sendMessage(userNotFoundMsg);
+        if (!user) {
+          throw new Error(userNotFoundMsg);
         }
+        store.removeUser(user.uuid);
+        sendMessage(JSON.stringify(user));
       }
     } else if (parsedRequest.message === 'addUser') {
       if (parsedRequest.data) {
         const userWithoutID = safeJsonParse<UserWithoutID>(isUserWithoutId)(parsedRequest.data);
-        if (userWithoutID && checkForUserFields(userWithoutID)) {
-          const user = createUser(userWithoutID);
-          store.addUser(user);
-          sendMessage(JSON.stringify(user));
-        } else {
-          sendMessage(badJsonMessage);
-        }
+        const user = createUser(userWithoutID);
+        store.addUser(user);
+        sendMessage(JSON.stringify(user));
       }
     } else if (parsedRequest.message === 'updateUser') {
       if (parsedRequest.data) {
-        try {
-          const payload = JSON.parse(parsedRequest.data) as { id: string; user: string };
-          const user = store.getUserByID(payload.id);
-          const userWithoutID = safeJsonParse<UserWithoutID>(isUserWithoutId)(payload.user);
-          if (!user) {
-            sendMessage(userNotFoundMsg);
-          } else if (!userWithoutID || !checkForUserFields(userWithoutID)) {
-            sendMessage(badJsonMessage);
-          } else {
-            const updatedUser = { ...userWithoutID, uuid: user.uuid };
-            store.updateUser(updatedUser);
-            sendMessage(JSON.stringify(updatedUser));
-          }
-        } catch (err) {
-          sendMessage(badJsonMessage);
+        const payload = safeJsonParse<UpdateUserPayload>(isUpdateUserPayload)(parsedRequest.data);
+        const user = store.getUserByID(payload.id);
+        const userWithoutID = safeJsonParse<UserWithoutID>(isUserWithoutId)(payload.user);
+        checkForUserFields(userWithoutID);
+        if (!user) {
+          throw new Error(userNotFoundMsg);
         }
+        const updatedUser = { ...userWithoutID, uuid: user.uuid };
+        store.updateUser(updatedUser);
+        sendMessage(JSON.stringify(updatedUser));
       }
     }
   }

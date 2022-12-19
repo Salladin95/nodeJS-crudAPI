@@ -1,47 +1,35 @@
 import { getId, HandleRequestFN } from './';
-import { isUser, User } from '../store';
-import {
-  safeJsonParse,
-  badJsonMessage,
-  writeResponse,
-  userNotFoundMsg,
-  actionEvents,
-  getErrorMessage,
-} from '../utils';
+import { safeJsonParse, writeResponse, actionEvents, withHandlingErrorAsync } from '../utils';
+import isErrorInChildProcc, { CPError } from '../cp/isErrorInChildProcess';
 
-const updateUserHandle = ({ request, response, emitter }: HandleRequestFN): void => {
-  let body = '';
-  request?.on('data', (chunk) => {
-    body += chunk.toString();
-  });
+const updateUserHandle = ({ request, response, emitter }: HandleRequestFN): Promise<void> => {
+  return new Promise((res, rej) => {
+    let body = '';
+    request?.on('data', (chunk) => {
+      body += chunk.toString();
+    });
 
-  request?.on('end', async () => {
-    try {
+    request?.on('end', async () => {
       const id = getId(request?.url);
       const data = JSON.stringify({ user: body, id });
       const message = JSON.stringify({ message: 'updateUser', data });
       emitter.emit(actionEvents.action, message);
       emitter.once(actionEvents.actionResponse, (msg) => {
-        if (msg === badJsonMessage) {
-          writeResponse({ response, responseType: 'text', code: 400, data: badJsonMessage });
-          return;
-        } else if (msg === userNotFoundMsg) {
-          writeResponse({ response, responseType: 'text', code: 404, data: userNotFoundMsg });
-          return;
+        try {
+          const err = safeJsonParse<CPError>(isErrorInChildProcc)(msg);
+          rej(err.errorMessage);
+        } catch {
+          writeResponse({
+            response,
+            responseType: 'JSON',
+            code: 200,
+            data: msg,
+          });
+          res();
         }
-        const user = safeJsonParse<User>(isUser)(msg);
-        writeResponse({
-          response,
-          responseType: 'JSON',
-          code: 200,
-          data: JSON.stringify(user),
-        });
       });
-    } catch (err) {
-      const message = getErrorMessage(err);
-      writeResponse({ response, responseType: 'text', code: 400, data: message });
-    }
+    });
   });
 };
 
-export default updateUserHandle;
+export default withHandlingErrorAsync(updateUserHandle);

@@ -21,12 +21,13 @@ const withHandlingErrorSync = (fn: ErrorHandlingWrappedFN) => {
     try {
       fn({ response, request, emitter });
     } catch (err) {
-      const errMsg = getErrorMessage(err);
+      const msg = getErrorMessage(err);
+      const code = msg === userNotFoundMsg ? 404 : errorCode;
       writeResponse({
         response,
-        code: errorCode,
+        code,
         responseType: errorType,
-        data: errMsg,
+        data: msg,
       });
     }
   };

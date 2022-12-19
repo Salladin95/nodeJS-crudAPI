@@ -1,15 +1,17 @@
+import { unExpectedJSON } from './constants';
+
 const safeJsonParse =
   <T>(guard: (o: unknown) => o is T) =>
-  (text: string): T | null => {
-    try {
-      const parsed = JSON.parse(text);
-      if (!guard(parsed)) {
-        return null;
+    (text: string): T => {
+      try {
+        const parsed = JSON.parse(text);
+        if (!guard(parsed)) {
+          throw new Error(unExpectedJSON);
+        }
+        return parsed;
+      } catch (err) {
+        throw err;
       }
-      return parsed;
-    } catch {
-      return null;
-    }
-  };
+    };
 
 export default safeJsonParse;

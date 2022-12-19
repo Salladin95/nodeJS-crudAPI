@@ -1,4 +1,4 @@
-import { User, UserActions, UserWithoutID } from '.';
+import { User, UserActions } from '.';
 
 const createUsersStore = (): UserActions => {
   let users: User[] = [];

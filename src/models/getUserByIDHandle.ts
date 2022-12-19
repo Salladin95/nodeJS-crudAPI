@@ -1,25 +1,22 @@
-import { isUser, User } from '../store';
 import { HandleRequestFN, getId } from '.';
-import {
-  actionEvents,
-  safeJsonParse,
-  userNotFoundMsg,
-  withHandlingErrorSync,
-  writeResponse,
-} from '../utils';
+import { actionEvents, safeJsonParse, withHandlingErrorAsync, writeResponse } from '../utils';
+import isErrorInChildProcc, { CPError } from '../cp/isErrorInChildProcess';
 
-const getUserByIDHandle = ({ response, request, emitter }: HandleRequestFN) => {
-  const id = getId(request?.url);
-  const message = JSON.stringify({ message: 'getUserByID', data: id });
-  emitter.emit(actionEvents.action, message);
-  emitter.once(actionEvents.actionResponse, (msg) => {
-    if (msg === userNotFoundMsg) {
-      writeResponse({ response, responseType: 'JSON', code: 404, data: userNotFoundMsg });
-      return;
-    }
-    const user = safeJsonParse<User>(isUser)(msg);
-    writeResponse({ response, responseType: 'JSON', code: 200, data: JSON.stringify(user) });
+const getUserByIDHandle = ({ response, request, emitter }: HandleRequestFN): Promise<void> => {
+  return new Promise((res, rej) => {
+    const id = getId(request?.url);
+    const message = JSON.stringify({ message: 'getUserByID', data: id });
+    emitter.emit(actionEvents.action, message);
+    emitter.once(actionEvents.actionResponse, (msg) => {
+      try {
+        const err = safeJsonParse<CPError>(isErrorInChildProcc)(msg);
+        rej(err.errorMessage);
+      } catch {
+        writeResponse({ response, responseType: 'JSON', code: 200, data: msg });
+        res();
+      }
+    });
   });
 };
 
-export default withHandlingErrorSync(getUserByIDHandle);
+export default withHandlingErrorAsync(getUserByIDHandle);

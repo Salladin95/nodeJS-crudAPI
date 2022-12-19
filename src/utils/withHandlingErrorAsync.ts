@@ -19,11 +19,13 @@ const withHandlingErrorAsync = (fn: (params: WithHandlingError) => Promise<void>
     try {
       await fn({ response, request, emitter });
     } catch (err) {
+      const msg = typeof err === 'string' ? err : getErrorMessage(err);
+      const code = msg === userNotFoundMsg ? 404 : errorCode;
       writeResponse({
         response,
-        code: errorCode,
+        code,
         responseType: errorType,
-        data: getErrorMessage(err),
+        data: msg,
       });
     }
   };

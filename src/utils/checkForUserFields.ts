@@ -1,4 +1,5 @@
 import { UserFields, UserWithoutID } from '../store/';
+import { unExpectedJSON } from './constants';
 
 const isItString = (str: unknown) => typeof str === 'string';
 const isItNumber = (num: unknown) => typeof num === 'number';
@@ -13,7 +14,7 @@ const checkUser: Record<UserFields, <DataT>(data: DataT) => boolean> = {
 
 const checkForUserFields = (user: UserWithoutID): boolean => {
   if (!Object.keys(user).every((key) => checkUser[key as UserFields](user[key as UserFields]))) {
-    return false;
+    throw new Error(unExpectedJSON);
   }
   return true;
 };
