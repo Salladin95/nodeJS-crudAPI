@@ -1,5 +1,11 @@
 import checkForUserFields from './checkForUserFields';
-import { actionEvents, badJsonMessage, operationErrMsg, userNotFoundMsg } from './constants';
+import {
+  actionEvents,
+  badJsonMessage,
+  unExpectedJSON,
+  operationErrMsg,
+  userNotFoundMsg,
+} from './constants';
 import getContentType from './getContentType';
 import getErrorMessage from './getErrorMessage';
 import withHandlingErrorSync from './withHandlingErrorSync';
@@ -14,7 +20,15 @@ import getCLIArgs from './getCLIargs';
 import sendMessage from './sendMessage';
 import { getValueFromStringAfterSeparator, getValueFromStringBeforeSeparator } from './stringUtils';
 import getMinOf from './getMin';
+import isObjectHasKey from './isObjectHasKey';
+import isObject from './isObject';
+import isKeyTypeOf from './isKeyTypeOf';
+
 export {
+  unExpectedJSON,
+  isKeyTypeOf,
+  isObjectHasKey,
+  isObject,
   getMinOf,
   getValueFromStringBeforeSeparator,
   getValueFromStringAfterSeparator,
