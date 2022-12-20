@@ -1,4 +1,4 @@
-import createApp from './server';
+import createApp from './server/';
 import { resolve } from 'path';
 import { cwd } from 'process';
 import { fork } from 'child_process';
