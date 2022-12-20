@@ -20,7 +20,7 @@ const createUserHandle = ({ request, response, emitter }: HandleRequestFN): Prom
           writeResponse({
             response,
             responseType: 'JSON',
-            code: 200,
+            code: 201,
             data: msg,
           });
           res(msg);
