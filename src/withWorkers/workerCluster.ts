@@ -2,8 +2,9 @@ import { Server } from 'http';
 import { EventEmitter } from 'stream';
 
 import { actionEvents, sendMessage } from '../utils';
+import { PORT } from '../utils';
 
-const workerCluster = (PORT: number, emitter: EventEmitter, app: Server) => {
+const workerCluster = (emitter: EventEmitter, app: Server) => {
   emitter.on(actionEvents.action, (msg) => sendMessage(msg));
   process.on('message', (msg) => emitter.emit(actionEvents.actionResponse, msg));
 

@@ -5,13 +5,14 @@ import { cwd } from 'process';
 import { cpus } from 'os';
 
 import launcLoadBalancer from './loadBalancer';
+import { PORT } from '../utils';
 
-const primaryCluster = (PORT: number) => {
+const primaryCluster = () => {
   const amountOfCpus = cpus().length;
   const targetFile = resolve(cwd(), 'src', 'cp/cp.ts');
   const child = fork(targetFile);
 
-  launcLoadBalancer(amountOfCpus, +PORT);
+  launcLoadBalancer();
   cluster.on('message', (worker, msg) => {
     child.send(msg);
     child.once('message', (msg) => worker.send(msg));

@@ -1,5 +1,4 @@
 import { HandleRequestFN } from './';
-import { isUser, User } from '../store';
 import { actionEvents, safeJsonParse, withHandlingErrorAsync, writeResponse } from '../utils';
 import isErrorInChildProcc, { CPError } from '../cp/isErrorInChildProcess';
 
@@ -18,14 +17,13 @@ const createUserHandle = ({ request, response, emitter }: HandleRequestFN): Prom
           const err = safeJsonParse<CPError>(isErrorInChildProcc)(msg);
           rej(err.errorMessage);
         } catch {
-          const user = safeJsonParse<User>(isUser)(msg);
           writeResponse({
             response,
             responseType: 'JSON',
             code: 200,
-            data: JSON.stringify(user),
+            data: msg,
           });
-          res();
+          res(msg);
         }
       });
     });

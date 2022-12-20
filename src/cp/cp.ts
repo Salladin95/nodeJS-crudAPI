@@ -4,6 +4,7 @@ import {
   getErrorMessage,
   safeJsonParse,
   sendMessage,
+  unExpectedJSON,
   userNotFoundMsg,
 } from '../utils';
 import {
@@ -28,14 +29,17 @@ process.on('message', (request) => {
     if (parsedRequest.message === 'getUsers') {
       const users = JSON.stringify(store.getUsers());
       sendMessage(users);
-    } else if (parsedRequest.message === 'getUserByID') {
-      if (parsedRequest.data) {
-        const user = store.getUserByID(parsedRequest.data);
-        if (!user) {
-          throw new Error(userNotFoundMsg);
-        }
-        sendMessage(JSON.stringify(user));
+      return;
+    }
+    if (!parsedRequest.data) {
+      throw new Error(unExpectedJSON);
+    }
+    if (parsedRequest.message === 'getUserByID') {
+      const user = store.getUserByID(parsedRequest.data);
+      if (!user) {
+        throw new Error(userNotFoundMsg);
       }
+      sendMessage(JSON.stringify(user));
     } else if (parsedRequest.message === 'removeUser') {
       if (parsedRequest.data) {
         const user = store.getUserByID(parsedRequest.data);
@@ -46,25 +50,21 @@ process.on('message', (request) => {
         sendMessage(JSON.stringify(user));
       }
     } else if (parsedRequest.message === 'addUser') {
-      if (parsedRequest.data) {
-        const userWithoutID = safeJsonParse<UserWithoutID>(isUserWithoutId)(parsedRequest.data);
-        const user = createUser(userWithoutID);
-        store.addUser(user);
-        sendMessage(JSON.stringify(user));
-      }
+      const userWithoutID = safeJsonParse<UserWithoutID>(isUserWithoutId)(parsedRequest.data);
+      const user = createUser(userWithoutID);
+      store.addUser(user);
+      sendMessage(JSON.stringify(user));
     } else if (parsedRequest.message === 'updateUser') {
-      if (parsedRequest.data) {
-        const payload = safeJsonParse<UpdateUserPayload>(isUpdateUserPayload)(parsedRequest.data);
-        const user = store.getUserByID(payload.id);
-        const userWithoutID = safeJsonParse<UserWithoutID>(isUserWithoutId)(payload.user);
-        checkForUserFields(userWithoutID);
-        if (!user) {
-          throw new Error(userNotFoundMsg);
-        }
-        const updatedUser = { ...userWithoutID, uuid: user.uuid };
-        store.updateUser(updatedUser);
-        sendMessage(JSON.stringify(updatedUser));
+      const payload = safeJsonParse<UpdateUserPayload>(isUpdateUserPayload)(parsedRequest.data);
+      const user = store.getUserByID(payload.id);
+      const userWithoutID = safeJsonParse<UserWithoutID>(isUserWithoutId)(payload.user);
+      checkForUserFields(userWithoutID);
+      if (!user) {
+        throw new Error(userNotFoundMsg);
       }
+      const updatedUser = { ...userWithoutID, uuid: user.uuid };
+      store.updateUser(updatedUser);
+      sendMessage(JSON.stringify(updatedUser));
     }
   }
 });
