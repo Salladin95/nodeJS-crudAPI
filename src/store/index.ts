@@ -4,8 +4,10 @@ import createStore from './createStore';
 import isUserWithoutId from './isUserWithoutId';
 import isUser from './isUser';
 import isArrayOfUsers from './isArrayOfUsers';
+import createStoreWithActions from './storeAction';
 
 export {
+  createStoreWithActions,
   isArrayOfUsers,
   isUserWithoutId,
   isUser,

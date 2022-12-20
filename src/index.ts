@@ -5,7 +5,7 @@ import { fork } from 'child_process';
 import { EventEmitter } from 'stream';
 
 import { actionEvents, isWithWorkers, PORT } from './utils';
-import runWithWorkers from './withWorkers';
+import runWithWorkers from './withWorkers/';
 
 const emitter = new EventEmitter();
 const app = createApp(emitter);

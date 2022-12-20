@@ -1,6 +1,7 @@
+import { UserActionFields } from 'store';
 import { isObject } from '../utils';
 
-type EventPayload = { message: string; data?: string };
+type EventPayload = { message: UserActionFields; data?: string };
 type UpdateUserPayload = { id: string; user: string };
 
 const isEventPayload = (event: unknown): event is EventPayload =>
