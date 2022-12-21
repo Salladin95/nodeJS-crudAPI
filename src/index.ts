@@ -1,11 +1,12 @@
-import createApp from './server/';
 import { resolve } from 'path';
 import { cwd } from 'process';
 import { fork } from 'child_process';
 import { EventEmitter } from 'stream';
 
+import createApp from './server';
+
 import { actionEvents, isWithWorkers, PORT } from './utils';
-import runWithWorkers from './withWorkers/';
+import runWithWorkers from './withWorkers';
 
 const emitter = new EventEmitter();
 const app = createApp(emitter);

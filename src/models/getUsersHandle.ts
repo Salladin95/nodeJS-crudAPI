@@ -1,5 +1,5 @@
 import { HandleRequestFN } from '.';
-import { actionEvents, getContentType, safeJsonParse } from '../utils/';
+import { actionEvents, getContentType } from '../utils/';
 
 const getUsersHandle = ({ response, emitter }: HandleRequestFN) => {
   const message = JSON.stringify({ message: 'getUsers' });

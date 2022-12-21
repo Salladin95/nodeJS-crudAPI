@@ -1,4 +1,4 @@
-import { createStoreWithActions } from '../store';
+import { createStoreWithActions } from '../store/';
 import { getErrorMessage, safeJsonParse, sendMessage, unExpectedJSON } from '../utils';
 import { EventPayload, isEventPayload } from './eventPayload';
 

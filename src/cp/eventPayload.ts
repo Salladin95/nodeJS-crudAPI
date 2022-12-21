@@ -1,4 +1,4 @@
-import { UserActionFields } from 'store';
+import { UserActionFields } from '../store';
 import { isObject } from '../utils';
 
 type EventPayload = { message: UserActionFields; data?: string };

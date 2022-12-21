@@ -3,7 +3,7 @@ import { cpus } from 'os';
 
 import createProxy from '../server/createProxy';
 import getOptions from '../server/getOptions';
-import { PORT } from '../utils';
+import { PORT } from '../utils/index';
 
 const launcLoadBalancer = () => {
   const amountOfCpus = cpus().length;
