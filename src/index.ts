@@ -14,7 +14,7 @@ const app = createApp(emitter);
 if (isWithWorkers()) {
   runWithWorkers(app, emitter);
 } else {
-  const targetFile = resolve(cwd(), 'src', 'cp/cp.ts');
+  const targetFile = resolve(cwd(), 'dist', 'cp/cp.js');
   const child = fork(targetFile);
 
   emitter.on(actionEvents.action, (msg) => child.send(msg));
