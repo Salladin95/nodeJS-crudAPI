@@ -21,7 +21,7 @@ const updateUserHandle = ({ request, response, emitter }: HandleRequestFN): Prom
         } catch {
           writeResponse({
             response,
-            responseType: 'JSON',
+            responseType: 'json',
             code: 200,
             data: msg,
           });

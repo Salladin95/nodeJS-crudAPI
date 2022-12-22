@@ -12,7 +12,7 @@ const getUserByIDHandle = ({ response, request, emitter }: HandleRequestFN): Pro
         const err = safeJsonParse<CPError>(isErrorInChildProcc)(msg);
         rej(err.errorMessage);
       } catch {
-        writeResponse({ response, responseType: 'JSON', code: 200, data: msg });
+        writeResponse({ response, responseType: 'json', code: 200, data: msg });
         res();
       }
     });
