@@ -13,7 +13,7 @@ import withHandlingErrorAsync from './withHandlingErrorAsync';
 import safeJsonParse from './safeJsonParse';
 import writeResponse from './writeResponse';
 import checkLength from './checkLength';
-import { BASE_URL, PORT } from './envirenments';
+import { BASE_URL, MODE, PORT } from './envirenments';
 import { getDirname, getFileNameAndDirname } from './getDirname';
 import isWithWorkers from './isClusterMode';
 import getCLIArgs from './getCLIargs';
@@ -25,6 +25,7 @@ import isObject from './isObject';
 import isKeyTypeOf from './isKeyTypeOf';
 
 export {
+  MODE,
   unExpectedJSON,
   isKeyTypeOf,
   isObjectHasKey,

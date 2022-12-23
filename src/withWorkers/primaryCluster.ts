@@ -5,11 +5,14 @@ import { cwd } from 'process';
 import { cpus } from 'os';
 
 import launcLoadBalancer from './loadBalancer';
-import { PORT } from '../utils';
+import { MODE, PORT } from '../utils';
 
 const primaryCluster = () => {
   const amountOfCpus = cpus().length;
-  const targetFile = resolve(cwd(), 'src', 'cp/cp.ts');
+  const options =
+    MODE === 'production' ? { folder: 'dist', ext: '.js' } : { folder: 'src', ext: '.ts' };
+
+  const targetFile = resolve(cwd(), options.folder, `cp/cp${options.ext}`);
   const child = fork(targetFile);
 
   launcLoadBalancer();
