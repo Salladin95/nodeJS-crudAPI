@@ -1,6 +1,6 @@
 {
   "watch": ["src"],
-  "ext": ".ts",
-  "ignore": [],
-  "exec": "yarn ts-node ./src/index.ts"
+  "ext": "ts, json",
+  "ignore": ["src/**/*.spec.ts"],
+  "exec": "ts-node-esm ./src/index.ts"
 }
